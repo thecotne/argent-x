@@ -1,7 +1,10 @@
 import { ethers } from "ethers"
+import { number } from "starknet"
+import { toBN } from "starknet/dist/utils/number"
 
 import { BaseWalletAccount } from "../../../shared/wallet.model"
 import { accountsEqual } from "../../../shared/wallet.service"
+import { normalizeAddress } from "../../services/addresses"
 import { startSession } from "../../services/backgroundSessions"
 import { Account } from "./Account"
 
@@ -41,6 +44,10 @@ export const getAccountImageUrl = (
   })
 }
 
+export const stripAddressZeroPadding = (accountAddress: string) => {
+  return number.toHex(toBN(number.hexToDecimalString(accountAddress)))
+}
+
 export const getNetworkAccountImageUrl = ({
   accountName,
   networkId,
@@ -52,7 +59,8 @@ export const getNetworkAccountImageUrl = ({
   accountAddress: string
   backgroundColor?: string
 }) => {
-  const accountIdentifier = `${networkId}::${accountAddress}`
+  const unpaddedAddress = stripAddressZeroPadding(accountAddress)
+  const accountIdentifier = `${networkId}::${unpaddedAddress}`
   const color = backgroundColor || getColor(accountIdentifier)
   return `https://eu.ui-avatars.com/api?name=${accountName}&background=${color}&color=fff`
 }
