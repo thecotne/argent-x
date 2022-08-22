@@ -1,10 +1,9 @@
 import { Collapse } from "@mui/material"
 import { FC, useCallback, useMemo, useState } from "react"
-import { transaction } from "starknet"
 import styled from "styled-components"
 
-import { formatTruncatedAddress } from "../../../../e2e/utils"
 import { IExplorerTransaction } from "../../../shared/explorer/type"
+import { CopyIconButton } from "../../components/CopyIconButton"
 import { DisclosureIcon } from "../../components/DisclosureIcon"
 import {
   Field,
@@ -14,7 +13,7 @@ import {
   FieldKeyMeta,
   FieldValue,
 } from "../../components/Fields"
-import { ContentCopyIcon } from "../../components/Icons/MuiIcons"
+import { formatTruncatedAddress } from "../../services/addresses"
 import { PrettyAccountAddress } from "../accounts/PrettyAccountAddress"
 import { AccountAddressField } from "../actions/transaction/fields/AccountAddressField"
 import { ContractField } from "../actions/transaction/fields/ContractField"
@@ -50,6 +49,15 @@ const TitleAddressPrefix = styled.div`
 
 const TitleAddress = styled.div`
   font-weight: 600;
+`
+
+const StyledCopyIconButton = styled(CopyIconButton)`
+  padding: 6px;
+  margin-right: 4px;
+`
+
+const AddressNoWrap = styled.div`
+  white-space: nowrap;
 `
 
 export interface IExplorerTransactionDetail {
@@ -165,7 +173,10 @@ export const ExplorerTransactionDetail: FC<IExplorerTransactionDetail> = ({
           <Field>
             <FieldKey>Contract</FieldKey>
             <FieldValue>
-              <ContentCopyIcon fontSize="inherit" /> {displayContractAddress}
+              <StyledCopyIconButton
+                copyValue={explorerTransaction.contractAddress}
+              />{" "}
+              <AddressNoWrap>{displayContractAddress}</AddressNoWrap>
             </FieldValue>
           </Field>
           <ContractField
